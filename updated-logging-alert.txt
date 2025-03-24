@@ -1,0 +1,25 @@
+apiVersion: loki.grafana.com/v1
+kind: AlertingRule
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"loki.grafana.com/v1","kind":"AlertingRule","metadata":{"annotations":{},"labels":{"openshift.io/log-alerting":"true"},"name":"cns-sandbox-logging-alert","namespace":"cns-sandbox"},"spec":{"groups":[{"interval":"1m","name":"CnsSandboxLoggingAlert","rules":[{"alert":"CnsSandboxHighErrorRate","annotations":{"description":"High error, failure, test, or testing rate detected","summary":"CNS Sandbox High Error/Failure/Test Rate"},"expr":"sum(rate({kubernetes_namespace_name=\"cns-sandbox\", kubernetes_pod_name=~\".*\"} |~ \"(failure|ERROR|test|testing)\" [1m])) \u003e 0.01 \n","for":"1m","labels":{"severity":"critical"}}]}],"tenantID":"application"}}
+  name: cns-sandbox-logging-alert
+  namespace: cns-sandbox
+  labels:
+    openshift.io/log-alerting: 'true'
+spec:
+  groups:
+    - interval: 1m
+      name: CnsSandboxLoggingAlert
+      rules:
+        - alert: CnsSandboxHighErrorRate
+          annotations:
+            description: 'High error, failure, test, or testing rate detected'
+            summary: 'CNS Sandbox High Error/Failure/Test Rate'
+          expr: |
+            sum(rate({kubernetes_namespace_name="cns-sandbox", kubernetes_pod_name=~".*"} |~ "(failure|ERROR|test|testing)" [1m])) > 0.01 
+          for: 1m
+          labels:
+            severity: critical
+  tenantID: application
