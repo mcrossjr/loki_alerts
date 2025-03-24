@@ -1,0 +1,46 @@
+﻿apiVersion: loki.grafana.com/v1
+kind: AlertingRule
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"loki.grafana.com/v1","kind":"AlertingRule","metadata":{"annotations":{},"labels":{"openshift.io/log-alerting":"true"},"name":"test-logging-alert","namespace":"ns-testapp-logalert"},"spec":{"groups":[{"interval":"1m","name":"Testloggingalert","rules":[{"alert":"TestappHighErrorRate","annotations":{"description":"testing1,2","summary":"testing1,2"},"expr":"sum(rate({kubernetes_namespace_name=\"ns-testapp-logalert\", kubernetes_pod_name=~\"testapp-logalerting.*\"} |= \"error\" [1m])) \u003e 0.01 \n","for":"1m","labels":{"severity":"critical"}}]}],"tenantID":"application"}}
+  resourceVersion: '223758581'
+  name: test-logging-alert
+  creationTimestamp: '2025-03-20T19:19:53Z'
+  generation: 1
+  managedFields:
+    - apiVersion: loki.grafana.com/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:kubectl.kubernetes.io/last-applied-configuration': {}
+          'f:labels':
+            .: {}
+            'f:openshift.io/log-alerting': {}
+        'f:spec':
+          .: {}
+          'f:groups': {}
+          'f:tenantID': {}
+      manager: kubectl-client-side-apply
+      operation: Update
+      time: '2025-03-20T19:19:53Z'
+  namespace: ns-testapp-logalert
+  labels:
+    openshift.io/log-alerting: 'true'
+spec:
+  groups:
+    - interval: 1m
+      name: Testloggingalert
+      rules:
+        - alert: TestappHighErrorRate
+          annotations:
+            description: 'testing1,2'
+            summary: 'testing1,2'
+          expr: |
+            sum(rate({kubernetes_namespace_name="ns-testapp-logalert", kubernetes_pod_name=~"testapp-logalerting.*"} |= "error" [1m])) > 0.01 
+          for: 1m
+          labels:
+            severity: critical
+  tenantID: application
